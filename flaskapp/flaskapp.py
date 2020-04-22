@@ -3,9 +3,7 @@ from flask import Flask, render_template, flash, request, url_for, redirect, ses
 
 app = Flask(__name__) 
 
-data={'x':0} 
-data={'y':0}
-data={'hand':False}
+data={'x':0, 'y':0, 'hand':False}
 
 @app.route('/',methods=['GET','POST'])
 def index():
@@ -38,12 +36,30 @@ def posthand(value):
 
 	return "Posted"
 
-@app.route('/gets/',methods=['GET','POST'])
-def gets():
+@app.route('/getx/',methods=['GET','POST'])
+def getx():
 
 	if request.method == 'GET':
 		return str(data['x'])
 	return 'Get'
+
+
+@app.route('/gety/',methods=['GET','POST'])
+def gety():
+
+        if request.method == 'GET':
+                return str(data['y'])
+        return 'Get'
+
+
+@app.route('/gethand/',methods=['GET','POST'])
+def gethand():
+
+        if request.method == 'GET':
+                return str(data['hand'])
+        return 'Get'
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
