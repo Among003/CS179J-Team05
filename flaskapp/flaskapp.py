@@ -1,9 +1,15 @@
 import os
-from flask import Flask, render_template, flash, request, url_for, redirect, session, make_response
+from flask import Flask, render_template, flash, request, url_for, redirect, session, make_response, jsonify
 
 app = Flask(__name__) 
 
-data={'x':0, 'y':0, 'hand':False}
+x = {'xValue':0} 
+y = {'yValue':0}
+handPosition = {'hand':0}
+
+
+
+data = {'x':0, 'y':0, 'hand':0}
 
 @app.route('/',methods=['GET','POST'])
 def index():
@@ -13,11 +19,22 @@ def index():
 		return 'Get Received'
 	return 'Success Logged In'
 
+@app.route('/postData/',methods=['POST'])
+def postData():
+	if request.method == 'POST':
+		content = request.get_json()
+		data['x'] = content.get('x')
+		data['y'] = content.get('y')
+		data['hand'] = content.get('hand')
+		return 'Posted'
+	return 'Post'
+
+
 @app.route('/postx/<int:value>',methods=['GET','POST'])
 def postx(value):
 	
 	if request.method == 'POST':
-		data['x'] = value	
+		x['xValue'] = value	
 
  
 	return "Posted"
@@ -25,22 +42,31 @@ def postx(value):
 @app.route('/posty/<int:value>',methods=['GET','POST'])
 def posty(value):
 	if request.method == 'POST':
-		data['y'] = value
+		y['yValue'] = value
 
 	return "Posted"
 
 @app.route('/posthand/<int:value>',methods=['GET','POST'])
 def posthand(value):
 	if request.method == 'POST':
-		data['hand'] = bool(value)
+		handPosition['hand'] = value
 
 	return "Posted"
+
+@app.route('/getData/',methods=['GET','POST'])
+def getData():
+	if request.methdod == 'GET':
+		return jsonify(data)
+		#return "TODO"
+	return 'GET'
 
 @app.route('/getx/',methods=['GET','POST'])
 def getx():
 
 	if request.method == 'GET':
-		return str(data['x'])
+	#	return str(x['xValue'])
+		return jsonify(data)
+	#	return jsonify({'x': x['xValue'], 'y': y['yValue'], 'hand': handPosition['hand']})
 	return 'Get'
 
 
@@ -48,7 +74,7 @@ def getx():
 def gety():
 
         if request.method == 'GET':
-                return str(data['y'])
+                return str(y['yValue'])
         return 'Get'
 
 
@@ -56,7 +82,7 @@ def gety():
 def gethand():
 
         if request.method == 'GET':
-                return str(data['hand'])
+                return str(handPosition['hand'])
         return 'Get'
 
 
