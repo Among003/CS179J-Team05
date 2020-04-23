@@ -7,10 +7,10 @@ import RPi.GPIO as GPIO
 
 url = "http://ec2-54-153-87-218.us-west-1.compute.amazonaws.com/"
 
-GPIO.setmode('GPIO.BCM')
-GPIO.setip(16, GPIO.OUT)
-GPIO.setip(20, GPIO.OUT)
-GPIO.setip(21, GPIO.OUT)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(16, GPIO.OUT)
+GPIO.setup(20, GPIO.OUT)
+GPIO.setup(21, GPIO.OUT)
 
 
 while(1):
