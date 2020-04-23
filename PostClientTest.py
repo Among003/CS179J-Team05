@@ -14,8 +14,6 @@ x_val = sys.argv[1]
 y_val = sys.argv[2]
 hand_val = bool(int(sys.argv[3]))
 
-data = json.dumps(tmp)
-
 r = req.post(url + "/postData/", json={'x': x_val, 'y': y_val, 'hand': hand_val})
 
 print(r.text)
