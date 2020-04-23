@@ -1,7 +1,10 @@
 import os
 from flask import Flask, render_template, flash, request, url_for, redirect, session, make_response, jsonify
 
+import json
+
 app = Flask(__name__) 
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 x = {'xValue':0} 
 y = {'yValue':0}
@@ -22,10 +25,13 @@ def index():
 @app.route('/postData/',methods=['POST'])
 def postData():
 	if request.method == 'POST':
-		content = request.get_json()
+		content = request.get_json(cache=False)
 		data['x'] = content.get('x')
 		data['y'] = content.get('y')
 		data['hand'] = content.get('hand')
+	
+		outfile = open("/home/ubuntu/CS179J-Team05/flaskapp/static/data.txt", 'w');
+		outfile.write(json.dumps(data))	
 		return 'Posted'
 	return 'Post'
 
@@ -55,8 +61,10 @@ def posthand(value):
 
 @app.route('/getData/',methods=['GET','POST'])
 def getData():
-	if request.methdod == 'GET':
-		return jsonify(data)
+	if request.method == 'GET':
+		infile = open("/home/ubuntu/CS179J-Team05/flaskapp/static/data.txt",'r');
+		tempDict = json.load(infile)
+		return jsonify(tempDict)
 		#return "TODO"
 	return 'GET'
 
@@ -65,8 +73,10 @@ def getx():
 
 	if request.method == 'GET':
 	#	return str(x['xValue'])
-		return jsonify(data)
-	#	return jsonify({'x': x['xValue'], 'y': y['yValue'], 'hand': handPosition['hand']})
+		infile.open("/home/ubuntu/CS179J-Team05/flaskapp/static/data.txt",'r');
+                tempDict = jason.load(infile)
+                return jsonify(tempDict)	
+#	return jsonify({'x': x['xValue'], 'y': y['yValue'], 'hand': handPosition['hand']})
 	return 'Get'
 
 
