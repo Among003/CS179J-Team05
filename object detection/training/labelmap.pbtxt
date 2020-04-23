@@ -1,0 +1,9 @@
+item {
+  id: 1
+  name: 'open hand'
+}
+
+item {
+  id: 2
+  name: 'closed hand'
+}

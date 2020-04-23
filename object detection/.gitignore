@@ -1,0 +1,8 @@
+#### Tensorflow Directories ####
+utils/
+testing/video/
+
+#### Data Files #####
+*.jpg
+*.mp4
+
