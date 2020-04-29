@@ -14,14 +14,6 @@ handPosition = {'hand':0}
 
 data = {'x':0, 'y':0, 'hand':0}
 
-@app.route('/',methods=['GET','POST'])
-def index():
-	if request.method =='POST':
-		return 'Post Received'
-	if request.method =='GET':
-		return 'Get Received'
-	return 'Success Logged In'
-
 @app.route('/postData/',methods=['POST'])
 def postData():
 	if request.method == 'POST':
@@ -35,30 +27,6 @@ def postData():
 		return 'Posted'
 	return 'Post'
 
-
-@app.route('/postx/<int:value>',methods=['GET','POST'])
-def postx(value):
-	
-	if request.method == 'POST':
-		x['xValue'] = value	
-
- 
-	return "Posted"
-
-@app.route('/posty/<int:value>',methods=['GET','POST'])
-def posty(value):
-	if request.method == 'POST':
-		y['yValue'] = value
-
-	return "Posted"
-
-@app.route('/posthand/<int:value>',methods=['GET','POST'])
-def posthand(value):
-	if request.method == 'POST':
-		handPosition['hand'] = value
-
-	return "Posted"
-
 @app.route('/getData/',methods=['GET','POST'])
 def getData():
 	if request.method == 'GET':
@@ -67,35 +35,6 @@ def getData():
 		return jsonify(tempDict)
 		#return "TODO"
 	return 'GET'
-
-@app.route('/getx/',methods=['GET','POST'])
-def getx():
-
-	if request.method == 'GET':
-	#	return str(x['xValue'])
-		infile.open("/home/ubuntu/CS179J-Team05/flaskapp/static/data.txt",'r');
-                tempDict = jason.load(infile)
-                return jsonify(tempDict)	
-#	return jsonify({'x': x['xValue'], 'y': y['yValue'], 'hand': handPosition['hand']})
-	return 'Get'
-
-
-@app.route('/gety/',methods=['GET','POST'])
-def gety():
-
-        if request.method == 'GET':
-                return str(y['yValue'])
-        return 'Get'
-
-
-@app.route('/gethand/',methods=['GET','POST'])
-def gethand():
-
-        if request.method == 'GET':
-                return str(handPosition['hand'])
-        return 'Get'
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
