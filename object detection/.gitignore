@@ -1,6 +1,8 @@
 #### Tensorflow Directories ####
 utils/
 testing/video/
+testing/logs/
+__pycache__/
 
 #### Data Files #####
 *.jpg
