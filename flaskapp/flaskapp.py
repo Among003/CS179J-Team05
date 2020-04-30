@@ -9,10 +9,10 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 x = {'xValue':0} 
 y = {'yValue':0}
 handPosition = {'hand':0}
+z = {'zValue':0}
 
 
-
-data = {'x':0, 'y':0, 'hand':0}
+data = {'x':0, 'y':0, 'hand':0, 'z':0}
 
 @app.route('/postData/',methods=['POST'])
 def postData():
@@ -21,7 +21,8 @@ def postData():
 		data['x'] = content.get('x')
 		data['y'] = content.get('y')
 		data['hand'] = content.get('hand')
-	
+		data['z'] = content.get('z')		
+
 		outfile = open("/home/ubuntu/CS179J-Team05/flaskapp/static/data.txt", 'w');
 		outfile.write(json.dumps(data))	
 		return 'Posted'
