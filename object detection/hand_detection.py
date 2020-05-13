@@ -10,95 +10,116 @@ import numpy as np
 import tensorflow as tf
 
 # tensorflow module for utilities using the models research repository
+sys.path.append('D:\school\CS179J\tensorflow\models')
+sys.path.append('D:\school\CS179J\tensorflow\models\research')
+sys.path.append('D:\school\CS179J\tensorflow\models\research\slim')
 from utils import label_map_util
 from utils import visualization_utils as vis_util
 
-def InitObjectDetection():
-    # Directory names 
-    GRAPH_FOLDER="inference_graph"
-    GRAPH_FILE="frozen_inference_graph.pb"
-    CWD=os.getcwd()
+CLNUM = 2
 
-    GRAPH_PATH=os.path.join(CWD, GRAPH_FOLDER, GRAPH_FILE)
-    LABEL_PATH=os.path.join(CWD,"training","labelmap.pbtxt")
-    
-    NUM_CLASSES=2
-    
-    #Load label map
-    #Label map translates the integer output from model to our assigned 
-    #These are tensorflow util functions in the research github
-    label_map = label_map_util.load_labelmap(LABEL_PATH)
-    categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
-    category_index = label_map_util.create_category_index(categories)
-
-    graph = tf.Graph()
-    with graph.as_default():
-        graph_def = tf.GraphDef()
-        with tf.gfile.GFile(GRAPH_PATH, 'rb') as fid:
-            serialized_graph = fid.read()
-            graph_def.ParseFromString(serialized_graph)
-            tf.import_graph_def(graph_def, name='')
-
-            sess = tf.Session(graph=graph)
-    return category_index, graph, sess
-
-def Detect(video, category_index, graph, sess):
-    # Define input and output tensors (i.e. data) for the object detection classifier
-
-    # Input tensor is the image
-    image_tensor = graph.get_tensor_by_name('image_tensor:0')
-    
-    # Output tensors are the detection boxes, scores, and classes
-    # Each box represents a part of the image where a particular object was detected
-    detection_boxes = graph.get_tensor_by_name('detection_boxes:0')
-    
-    # Each score represents level of confidence for each of the objects.
-    # The score is shown on the result image, together with the class label.
-    detection_scores = graph.get_tensor_by_name('detection_scores:0')
-    detection_classes = graph.get_tensor_by_name('detection_classes:0')
-    
-    # Number of objects detected
-    num_detections = graph.get_tensor_by_name('num_detections:0')
-    
-    results = []
-    
-    while(video.isOpened()):
-
-        # Acquire frame and expand frame dimensions to have shape: [1, None, None, 3]
-        # i.e. a single-column array, where each item in the column has the pixel RGB value
-        ret, frame = video.read()
-        #print(ret)
-        if not ret: break
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame_expanded = np.expand_dims(frame_rgb, axis=0)
-    
-        # Perform the actual detection by running the model with the image as input
-        (boxes, scores, classes, num) = sess.run(
-            [detection_boxes, detection_scores, detection_classes, num_detections],
-            feed_dict={image_tensor: frame_expanded})
+class Object_Detection:
+    def __init__(self, COORDINATE_CLASS, GRAPH_PATH, LABEL_PATH, VIDEO1, VIDEO2, NUM_CLASSES=CLNUM, Verbose=False):
+        self.cclass = COORDINATE_CLASS
+        self.graph_path = GRAPH_PATH
+        self.label_path = LABEL_PATH
+        self.video1 = VIDEO1
+        self.video2 = VIDEO2
+        self.num_classes = NUM_CLASSES
+        self.Verbose = Verbose
         
-        predicted_class = category_index[classes[0][0]]['name']
+        # Map output nodes to labels for classification
+        label_map = label_map_util.load_labelmap(LABEL_PATH)
+        categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
+        self.category_index = label_map_util.create_category_index(categories)
         
-        results.append({"boxes": boxes[0][0], "scores": scores[0][0], "classes": predicted_class})
+        # create graph and load tensorflow model
+        self.graph = tf.Graph()
+        with self.graph.as_default():
+            graph_def = tf.GraphDef()
+            with tf.gfile.GFile(GRAPH_PATH, 'rb') as fid:
+                serialized_graph = fid.read()
+                graph_def.ParseFromString(serialized_graph)
+                tf.import_graph_def(graph_def, name='')
+                self.sess = tf.Session(graph=self.graph)
+                
+        # Input tensor is the image detected from webcam
+        self.image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
+        
+        # Output tensors are the detection boxes, scores, and classes
+        # Bounding box outlines the object and will be used to give location of the hand for control
+        self.detection_boxes = self.graph.get_tensor_by_name('detection_boxes:0')
+        
+        # Scores give confidence value
+        # Classes give prediction
+        self.detection_scores = self.graph.get_tensor_by_name('detection_scores:0')
+        self.detection_classes = self.graph.get_tensor_by_name('detection_classes:0')
+        
+        # Number of objects detected
+        self.num_detections = self.graph.get_tensor_by_name('num_detections:0')
+        
+    def Detect(self):
+        # Get frame, frame is given in 3d array of RGB values
+        ret1, frame1 = self.video1.read()
+        if not ret1: return None # Exit with empty values if 
+        ret2, frame2 = self.video2.read()
+        if not ret2: return None # Exit with empty values if 
+        
+        # Map colors on image for openCV
+        frame_rgb1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
+        frame_expanded1 = np.expand_dims(frame_rgb1, axis=0)
+        frame_rgb2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB)
+        frame_expanded2 = np.expand_dims(frame_rgb2, axis=0)
+    
+        # This is the part with the actual detection
+        (boxes1, scores1, classes1, num1) = self.sess.run(
+            [self.detection_boxes, self.detection_scores, self.detection_classes, self.num_detections],
+            feed_dict={self.image_tensor: frame_expanded1})
+        (boxes2, scores2, classes2, num2) = self.sess.run(
+            [self.detection_boxes, self.detection_scores, self.detection_classes, self.num_detections],
+            feed_dict={self.image_tensor: frame_expanded2})
+        
+        # Define predicted class from the highest confidence guess of the image
+        predicted_class1 = self.category_index[classes1[0][0]]['name']
+        predicted_class2 = self.category_index[classes2[0][0]]['name']
+        
+        results = {"video1": {"boxes": boxes1[0][0].tolist(), "scores": scores1[0][0], "classes": predicted_class1},
+                   "video2": {"boxes": boxes2[0][0].tolist(), "scores": scores2[0][0], "classes": predicted_class2}}
         #print(category_index)
     
-        # Draw the results of the detection (aka 'visulaize the results')
+        # Draw the bounding box and prediction
         vis_util.visualize_boxes_and_labels_on_image_array(
-            frame,
-            np.squeeze(boxes),
-            np.squeeze(classes).astype(np.int32),
-            np.squeeze(scores),
-            category_index,
+            frame1,
+            np.squeeze(boxes1),
+            np.squeeze(classes1).astype(np.int32),
+            np.squeeze(scores1),
+            self.category_index,
             use_normalized_coordinates=True,
             line_thickness=8,
             min_score_thresh=0.60)
-    
-        # All the results have been drawn on the frame, so it's time to display it.
-        cv2.imshow('Object detector', frame)
-    
-        # Press 'q' to quit
-        if cv2.waitKey(1) == ord('q'):
-            break
         
-    return results
+        # Draw the bounding box and prediction
+        vis_util.visualize_boxes_and_labels_on_image_array(
+            frame2,
+            np.squeeze(boxes2),
+            np.squeeze(classes2).astype(np.int32),
+            np.squeeze(scores2),
+            self.category_index,
+            use_normalized_coordinates=True,
+            line_thickness=8,
+            min_score_thresh=0.60)
+        
+        if self.Verbose:
+            cv2.imshow('Obj Detect 1', frame1)
+            cv2.imshow('Obj Detect 2', frame2)
+            if cv2.waitKey(1) == ord('q'):
+                return None
+        
+        print("going to coors")
+        #results["coors"] = self.cclass.Filter(self.cclass.GetCoors(boxes1[0][0], boxes2[0][0]))
+        results["coors"] = self.cclass.GetCoors(boxes1[0][0], boxes2[0][0])
+        print("done")
+        print(results)
+        
+        return results
             

@@ -6,15 +6,13 @@ Created on Wed Apr 22 19:16:06 2020
 """
 
 import os, cv2, sys, json, re
-sys.path.append('D:\school\CS179J\tensorflow\models')
-sys.path.append('D:\school\CS179J\tensorflow\models\research')
-sys.path.append('D:\school\CS179J\tensorflow\models\research\slim')
 import numpy as np
 import tensorflow as tf
 import datetime as t
 nowdir = os.getcwd()
 os.chdir('..')
 import hand_detection
+import coordinates
 os.chdir(nowdir)
 
 # tensorflow module for utilities using the models research repository
@@ -22,16 +20,16 @@ from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 
 p = re.compile('([ .:-])')
-#test = p.sub('', str(t.datetime.now()).split('.')[0])
 TEST_DUMP_FILE = "test_" + p.sub('', str(t.datetime.now()).split('.')[0])
 
 def CheckWrong(predicted, correct):
     for prediction in predicted:
         if prediction != correct:
+            print("Expected: ", correct," recieved: ", prediction)
             return False
     return True
 
-def testVideoOnObjectDetection(testVideo, label):
+def testVideoOnObjectDetection(testVideo1, testVideo2, label):
     """
     
 
@@ -42,15 +40,29 @@ def testVideoOnObjectDetection(testVideo, label):
 
     """
     
-    #VIDEO_PATH = os.path.join(os.getcwd(), "testing/video/test1.mp4")
+    GRAPH_PATH = os.path.join(os.getcwd(), "inference_graph/frozen_inference_graph.pb")
+    LABEL_PATH = os.path.join(os.getcwd(), "training\labelmap.pbtxt")
     
-    (category_index, graph, sess) = hand_detection.InitObjectDetection()
+    video1 = cv2.VideoCapture(testVideo1)
+    video2 = cv2.VideoCapture(testVideo2)
     
-    video = cv2.VideoCapture(testVideo)
+    coors = coordinates.coordinates()
+    obj_detect = hand_detection.Object_Detection(coors, GRAPH_PATH, LABEL_PATH, video1, video2, Verbose=True)
     
-    results = hand_detection.Detect(video, category_index, graph, sess)
+    results = []
     
-    correct = CheckWrong([result['classes'] for result in results], label)
+    while(video1.isOpened() and video2.isOpened()):
+        output = obj_detect.Detect()
+        if output is None: break
+        else: results.append(output)
+        
+    cv2.destroyAllWindows()
+    
+    print(results)
+    print([result for result in results])
+    correct = CheckWrong([result["video1"]["classes"] for result in results], label)
+    
+    #print([])
     
     report = {"correct": correct, "output": results}
     #report = {"output": (boxes, scores, classes)}
@@ -72,15 +84,19 @@ def TestVideoHarness():
     
     os.chdir('..')
     
-    testVideo1 = os.path.join(os.getcwd(), "testing/video/test1.mp4")
-    testVideo2 = os.path.join(os.getcwd(), "testing/video/test2.mp4")
-    testVideo3 = os.path.join(os.getcwd(), "testing/video/test3.mp4")
-    testVideo4 = os.path.join(os.getcwd(), "testing/video/test4.mp4")
+    testVideo1_1 = os.path.join(os.getcwd(), "testing/video/video1_test1.mp4")
+    testVideo2_1 = os.path.join(os.getcwd(), "testing/video/video2_test1.mp4")
+    testVideo1_2 = os.path.join(os.getcwd(), "testing/video/video1_test2.mp4")
+    testVideo2_2 = os.path.join(os.getcwd(), "testing/video/video2_test2.mp4")
+    testVideo1_3 = os.path.join(os.getcwd(), "testing/video/video1_test3.mp4")
+    testVideo2_3 = os.path.join(os.getcwd(), "testing/video/video2_test3.mp4")
+    testVideo1_4 = os.path.join(os.getcwd(), "testing/video/video1_test4.mp4")
+    testVideo2_4 = os.path.join(os.getcwd(), "testing/video/video2_test4.mp4")
     
-    report["test1"] = testVideoOnObjectDetection(testVideo1, "open hand")
-    report["test2"] = testVideoOnObjectDetection(testVideo2, "open hand")
-    report["test3"] = testVideoOnObjectDetection(testVideo3, "closed hand")
-    report["test4"] = testVideoOnObjectDetection(testVideo4, "closed hand")
+    report["test1"] = testVideoOnObjectDetection(testVideo1_1, testVideo2_1, "open hand")
+    report["test2"] = testVideoOnObjectDetection(testVideo1_2, testVideo2_2, "open hand")
+    report["test3"] = testVideoOnObjectDetection(testVideo1_3, testVideo2_3, "closed hand")
+    report["test4"] = testVideoOnObjectDetection(testVideo1_4, testVideo2_4, "closed hand")
     
     return report
     
