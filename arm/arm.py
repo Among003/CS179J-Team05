@@ -65,6 +65,7 @@ def foward(motor):
     moveStepper(1, 1, 0, 0, motor)
     moveStepper(1, 0, 0, 0, motor)
     moveStepper(1, 0, 0, 1, motor)
+    moveStepper(0, 0, 0, 0, motor)
 
 def reverse(motor):
     '''
@@ -79,6 +80,7 @@ def reverse(motor):
     moveStepper(0, 0, 1, 0, motor)
     moveStepper(0, 0, 1, 1, motor)
     moveStepper(0, 0, 0, 1, motor)
+    moveStepper(0, 0, 0, 0, motor)
 
 def move_cw(degrees, motor):
     '''
@@ -100,12 +102,14 @@ def main():
     prev_r = 0
     prev_theta = 0
     prev_z = 0
+    prev_hand = False
     while(1):    
         
         data = client.getData()
         x_val = float(data['x'])
         y_val = float(data['y'] )
         z_val = float(data['z'] )
+        
 
   
         hand_val = True if data['hand'] == 'open hand' else False
@@ -116,30 +120,33 @@ def main():
 
         print(r_val)
         print(theta)
+        print(hand_val)
 
         delta_r = r_val - prev_r
         delta_theta = theta - prev_theta
         delta_z = z_val - prev_z
 
-        if hand_val:
-            t1 = threading.Thread(target= move_cw,args=(360, hand_motor))
+        if hand_val and not prev_hand:
+            t1 = threading.Thread(target= move_ccw,args=(720, hand_motor))
+        elif not hand_val and prev_hand:
+            t1 = threading.Thread(target= move_cw,args=(720, hand_motor))
         else:
-            t1 = threading.Thread(target= move_ccw,args=(360, hand_motor))
+            t1 = threading.Thread(target= move_cw,args=(0, hand_motor))
 
         if delta_theta >= 0:
-            t2 = threading.Thread(target= move_cw,args=(delta_theta, bottom_motor))
+            t2 = threading.Thread(target= move_cw,args=(delta_theta * 2, bottom_motor))
         else:
-            t2 = threading.Thread(target= move_ccw,args=(delta_theta * -1, bottom_motor))
+            t2 = threading.Thread(target= move_ccw,args=(delta_theta * 2 * -1, bottom_motor))
         
         if delta_r >= 0:
-            t3 = threading.Thread(target= move_cw,args=(delta_r * 360, motor3))
+            t3 = threading.Thread(target= move_cw,args=(delta_r * 360 * 2, motor3))
         else:
-            t3 = threading.Thread(target= move_ccw,args=(delta_r * 360 * -1, motor3))
+            t3 = threading.Thread(target= move_ccw,args=(delta_r * 360 * -1 * 2, motor3))
         
         if delta_z >= 0:
-            t4 = threading.Thread(target= move_cw,args=(delta_z * 360, motor4))
+            t4 = threading.Thread(target= move_cw,args=(delta_z * 360 * 2, motor4))
         else:
-            t4 = threading.Thread(target= move_cw,args=(delta_z * 360 * -1, motor4))
+            t4 = threading.Thread(target= move_ccw,args=(delta_z * 360 * -1 * 2, motor4))
         
         t1.setDaemon(True)
         t2.setDaemon(True)
@@ -177,9 +184,9 @@ def main():
         prev_r = r_val
         prev_theta = theta
         prev_z = z_val
-        prev_hand = hand
+        prev_hand = hand_val
 
-        time.sleep(2)
+        time.sleep(.1)
     
 if __name__ == "__main__":
     try:
