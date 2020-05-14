@@ -39,9 +39,13 @@ def getData():
     xVal = float(data['x'])
     yVal = float(data['y'])
     zVal = float(data['z'])
-    handVal = bool(data['hand'])
+    handVal = data['hand']
     print("x: " + str(xVal) + " y: " + str(yVal) + " z: " + str(zVal)  + " hand: " + str(handVal))
 
     data = {'x': xVal, 'y': yVal, 'z': zVal, 'hand': handVal}
 
     return data
+
+
+
+postData(0.12345, 0.65489, 0.147852, False)
