@@ -10,8 +10,9 @@ import requests as req
 import tkinter as tk
 import hand_detection
 import coordinates
-cwd = os.getcwd()
-os.chdir('../client')
+cwd = os.path.dirname(os.path.abspath(__file__))
+print(cwd)
+os.chdir(os.path.join(cwd, '../client'))
 import client
 os.chdir(cwd)
 

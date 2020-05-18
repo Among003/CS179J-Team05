@@ -1,14 +1,22 @@
-import sys
-import os
+import sys, os
 
-sys.path.insert(0, os.path.abspath("../object detection/"))
-sys.path.insert(0, os.path.abspath("../object detection/testing"))
-sys.path.insert(0, os.path.abspath("../ClientAndServerTesting"))
+cwd = os.getcwd()
 
+os.chdir('..')
+os.chdir('ClientAndServerTesting')
+from RequestTest import serverAndClientTest
+os.chdir(r'../object detection')
+from test import TestVideoOnObjectDetectionHarness
 
-from test import TestVideoHarness 
-import RequestTest
+os.chdir(cwd)
 
-
-TestVideoHarness()
-serverAndClientTest(4.0, 4.6, 1.4, "open")
+def main():
+    
+    report = {}
+    
+    report['TestVideoOnObjectDetectionHarness'] = TestVideoOnObjectDetectionHarness()
+    report['serverAndClientTest'] = serverAndClientTest(4.0, 4.6, 1.4, "open")
+    
+    
+if __name__ == '__main__':
+    main()

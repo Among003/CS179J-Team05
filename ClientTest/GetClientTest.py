@@ -7,8 +7,7 @@ import time
 
 url = "http://ec2-54-153-87-218.us-west-1.compute.amazonaws.com/"
 
-while(1):
-    data = 0
+def doThing():
     r = req.get(url + "/getData/",  headers={'Cache-Control': 'no-cache'})
 
     if r.ok:
@@ -20,10 +19,9 @@ while(1):
     
     r.close()
     
-    time.sleep(1)
-
-
-
-
+def Test():
+    for i in range(0,20):
+        doThing()
+        time.sleep(1)
 
 

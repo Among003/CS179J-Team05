@@ -9,12 +9,12 @@ import os, cv2, sys, json, re
 import numpy as np
 import tensorflow as tf
 import datetime as t
-nowdir = os.getcwd()
+cwd = os.path.dirname(os.path.abspath(__file__))
 os.chdir('..')
 import hand_detection
 import coordinates
 import controlEnvironment as control
-os.chdir(nowdir)
+os.chdir(cwd)
 
 # tensorflow module for utilities using the models research repository
 from object_detection.utils import label_map_util
@@ -41,8 +41,8 @@ def testVideoOnObjectDetection(testVideo1, testVideo2, label):
 
     """
     
-    GRAPH_PATH = os.path.join(os.getcwd(), "inference_graph/frozen_inference_graph.pb")
-    LABEL_PATH = os.path.join(os.getcwd(), "training\labelmap.pbtxt")
+    GRAPH_PATH = os.path.join(cwd, "../inference_graph/frozen_inference_graph.pb")
+    LABEL_PATH = os.path.join(cwd, "../training\labelmap.pbtxt")
     
     video1 = cv2.VideoCapture(testVideo1)
     video2 = cv2.VideoCapture(testVideo2)
@@ -65,13 +65,13 @@ def testVideoOnObjectDetection(testVideo1, testVideo2, label):
     
     #print([])
     
-    report = {"correct": correct, "output": results}
+    report = {"correct": correct, "input": video1, "output": results}
     #report = {"output": (boxes, scores, classes)}
     
     return report
     
     
-def TestVideoHarness():
+def TestVideoOnObjectDetectionHarness():
     """
     Specific harness for Video Object Detection, configures
 
@@ -85,14 +85,14 @@ def TestVideoHarness():
     
     os.chdir('..')
     
-    testVideo1_1 = os.path.join(os.getcwd(), "testing/video/video1_test1.mp4")
-    testVideo2_1 = os.path.join(os.getcwd(), "testing/video/video2_test1.mp4")
-    testVideo1_2 = os.path.join(os.getcwd(), "testing/video/video1_test2.mp4")
-    testVideo2_2 = os.path.join(os.getcwd(), "testing/video/video2_test2.mp4")
-    testVideo1_3 = os.path.join(os.getcwd(), "testing/video/video1_test3.mp4")
-    testVideo2_3 = os.path.join(os.getcwd(), "testing/video/video2_test3.mp4")
-    testVideo1_4 = os.path.join(os.getcwd(), "testing/video/video1_test4.mp4")
-    testVideo2_4 = os.path.join(os.getcwd(), "testing/video/video2_test4.mp4")
+    testVideo1_1 = os.path.join(cwd, "testing/video/video1_test1.mp4")
+    testVideo2_1 = os.path.join(cwd, "testing/video/video2_test1.mp4")
+    testVideo1_2 = os.path.join(cwd, "testing/video/video1_test2.mp4")
+    testVideo2_2 = os.path.join(cwd, "testing/video/video2_test2.mp4")
+    testVideo1_3 = os.path.join(cwd, "testing/video/video1_test3.mp4")
+    testVideo2_3 = os.path.join(cwd, "testing/video/video2_test3.mp4")
+    testVideo1_4 = os.path.join(cwd, "testing/video/video1_test4.mp4")
+    testVideo2_4 = os.path.join(cwd, "testing/video/video2_test4.mp4")
     
     report["test1"] = testVideoOnObjectDetection(testVideo1_1, testVideo2_1, "open hand")
     report["test2"] = testVideoOnObjectDetection(testVideo1_2, testVideo2_2, "open hand")
@@ -119,14 +119,14 @@ def testControlEnvironmentHarness():
     
     os.chdir('..')
     
-    testVideo1_1 = os.path.join(os.getcwd(), "testing/video/video1_test1.mp4")
-    testVideo2_1 = os.path.join(os.getcwd(), "testing/video/video2_test1.mp4")
-    testVideo1_2 = os.path.join(os.getcwd(), "testing/video/video1_test2.mp4")
-    testVideo2_2 = os.path.join(os.getcwd(), "testing/video/video2_test2.mp4")
-    testVideo1_3 = os.path.join(os.getcwd(), "testing/video/video1_test3.mp4")
-    testVideo2_3 = os.path.join(os.getcwd(), "testing/video/video2_test3.mp4")
-    testVideo1_4 = os.path.join(os.getcwd(), "testing/video/video1_test4.mp4")
-    testVideo2_4 = os.path.join(os.getcwd(), "testing/video/video2_test4.mp4")
+    testVideo1_1 = os.path.join(cwd, "testing/video/video1_test1.mp4")
+    testVideo2_1 = os.path.join(cwd, "testing/video/video2_test1.mp4")
+    testVideo1_2 = os.path.join(cwd, "testing/video/video1_test2.mp4")
+    testVideo2_2 = os.path.join(cwd, "testing/video/video2_test2.mp4")
+    testVideo1_3 = os.path.join(cwd, "testing/video/video1_test3.mp4")
+    testVideo2_3 = os.path.join(cwd, "testing/video/video2_test3.mp4")
+    testVideo1_4 = os.path.join(cwd, "testing/video/video1_test4.mp4")
+    testVideo2_4 = os.path.join(cwd, "testing/video/video2_test4.mp4")
     
     report["test1"] = testControlEnvironment(testVideo1_1, testVideo2_1, "open hand")
     report["test2"] = testControlEnvironment(testVideo1_2, testVideo2_2, "open hand")
@@ -137,7 +137,7 @@ def testControlEnvironmentHarness():
 
 def runObjDetectTests():
     print('started testing object detection')
-    report = TestVideoHarness()
+    report = TestVideoOnObjectDetectionHarness()
     for test in report:
         print(test, " Report returned: ", report[test]["correct"])
     print(report)
