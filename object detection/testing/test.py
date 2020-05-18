@@ -13,6 +13,7 @@ nowdir = os.getcwd()
 os.chdir('..')
 import hand_detection
 import coordinates
+import controlEnvironment as control
 os.chdir(nowdir)
 
 # tensorflow module for utilities using the models research repository
@@ -76,7 +77,7 @@ def TestVideoHarness():
 
     Returns
     -------
-    None.
+    Report - Dictionary containing
 
     """
     
@@ -99,8 +100,42 @@ def TestVideoHarness():
     report["test4"] = testVideoOnObjectDetection(testVideo1_4, testVideo2_4, "closed hand")
     
     return report
+
+def testControlEnvironment(video1, video2, correct):
     
-if __name__ == '__main__':
+    control.main(video1, video2, Verbose=True, Testing=True)
+    
+    # try:
+    #     control.main(video1, video2)
+    # except Exception:
+    #     print
+    #     return {"correct": False}
+    
+    return {"correct": True}
+
+def testControlEnvironmentHarness():
+    
+    report = {}
+    
+    os.chdir('..')
+    
+    testVideo1_1 = os.path.join(os.getcwd(), "testing/video/video1_test1.mp4")
+    testVideo2_1 = os.path.join(os.getcwd(), "testing/video/video2_test1.mp4")
+    testVideo1_2 = os.path.join(os.getcwd(), "testing/video/video1_test2.mp4")
+    testVideo2_2 = os.path.join(os.getcwd(), "testing/video/video2_test2.mp4")
+    testVideo1_3 = os.path.join(os.getcwd(), "testing/video/video1_test3.mp4")
+    testVideo2_3 = os.path.join(os.getcwd(), "testing/video/video2_test3.mp4")
+    testVideo1_4 = os.path.join(os.getcwd(), "testing/video/video1_test4.mp4")
+    testVideo2_4 = os.path.join(os.getcwd(), "testing/video/video2_test4.mp4")
+    
+    report["test1"] = testControlEnvironment(testVideo1_1, testVideo2_1, "open hand")
+    report["test2"] = testControlEnvironment(testVideo1_2, testVideo2_2, "open hand")
+    report["test3"] = testControlEnvironment(testVideo1_3, testVideo2_3, "closed hand")
+    report["test4"] = testControlEnvironment(testVideo1_4, testVideo2_4, "closed hand")
+    
+    return report
+
+def runObjDetectTests():
     print('started testing object detection')
     report = TestVideoHarness()
     for test in report:
@@ -108,4 +143,19 @@ if __name__ == '__main__':
     print(report)
     with open(os.path.join(os.path.abspath('testing/logs'), TEST_DUMP_FILE), 'w+') as jF:
         json.dump(str(report), jF)
-    #print(report)
+        
+def runControlTests():
+    print('started testing control environment')
+    report = testControlEnvironmentHarness()
+    for test in report:
+        print(test, " Report returned: ", report[test]["correct"])
+    print(report)
+    with open(os.path.join(os.path.abspath('testing/logs'), TEST_DUMP_FILE), 'w+') as jF:
+        json.dump(str(report), jF)
+
+def main():
+    runObjDetectTests()
+    runControlTests()
+    
+if __name__ == '__main__':
+   main()

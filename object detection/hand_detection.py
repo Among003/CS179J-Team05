@@ -5,7 +5,7 @@ Created on Wed Apr 22 22:25:54 2020
 @author: tyler
 """
 
-import os, cv2, sys
+import os, cv, cv2, sys, imutils, time
 import numpy as np
 import tensorflow as tf
 
@@ -17,6 +17,23 @@ from utils import label_map_util
 from utils import visualization_utils as vis_util
 
 CLNUM = 2
+
+# font 
+font = cv2.FONT_HERSHEY_SIMPLEX 
+  
+# org 
+org = (50, 50) 
+  
+# fontScale 
+fontScale = 1
+   
+# Blue color in BGR 
+color = (255, 0, 0) 
+  
+# Line thickness of 2 px 
+thickness = 2
+
+DELAY = 250
 
 class Object_Detection:
     def __init__(self, COORDINATE_CLASS, GRAPH_PATH, LABEL_PATH, VIDEO1, VIDEO2, NUM_CLASSES=CLNUM, Verbose=False):
@@ -62,8 +79,10 @@ class Object_Detection:
         # Get frame, frame is given in 3d array of RGB values
         ret1, frame1 = self.video1.read()
         if not ret1: return None # Exit with empty values if 
+        frame1 = imutils.rotate(frame1, angle=180)
         ret2, frame2 = self.video2.read()
         if not ret2: return None # Exit with empty values if 
+        frame2 = imutils.rotate(frame2, angle=90)
         
         # Map colors on image for openCV
         frame_rgb1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
@@ -80,11 +99,16 @@ class Object_Detection:
             feed_dict={self.image_tensor: frame_expanded2})
         
         # Define predicted class from the highest confidence guess of the image
-        predicted_class1 = self.category_index[classes1[0][0]]['name']
-        predicted_class2 = self.category_index[classes2[0][0]]['name']
+        predicted_class1 = self.category_index[int(classes1[0][0])]['name']
+        try:
+            predicted_class2 = self.category_index[int(classes2[0][0])]['name']
+        except KeyError:
+            print("Error: ", classes2[0][0], "when should be in: ", self.category_index)
+            raise KeyError
         
         results = {"video1": {"boxes": boxes1[0][0].tolist(), "scores": scores1[0][0], "classes": predicted_class1},
-                   "video2": {"boxes": boxes2[0][0].tolist(), "scores": scores2[0][0], "classes": predicted_class2}}
+                   "video2": {"boxes": boxes2[0][0].tolist(), "scores": scores2[0][0], "classes": predicted_class2},
+                   "hand_val": predicted_class1}
         #print(category_index)
     
         # Draw the bounding box and prediction
@@ -109,17 +133,27 @@ class Object_Detection:
             line_thickness=8,
             min_score_thresh=0.60)
         
-        if self.Verbose:
-            cv2.imshow('Obj Detect 1', frame1)
-            cv2.imshow('Obj Detect 2', frame2)
-            if cv2.waitKey(1) == ord('q'):
-                return None
-        
         print("going to coors")
         #results["coors"] = self.cclass.Filter(self.cclass.GetCoors(boxes1[0][0], boxes2[0][0]))
         results["coors"] = self.cclass.GetCoors(boxes1[0][0], boxes2[0][0])
         print("done")
         print(results)
+        
+        #time.sleep(DELAY)
+        
+        if self.Verbose:
+            text1 = "Top View Values: {} , {} , {}".format(results["coors"][0], results["coors"][1], results["hand_val"])
+            text2 = "Side View Values: {}".format(results["coors"][2])
+            frame1 = cv2.putText(frame1, text1, org, font,  
+                   fontScale, color, thickness, cv2.LINE_AA) 
+            frame2 = cv2.putText(frame2, text2, org, font,  
+                   fontScale, color, thickness, cv2.LINE_AA) 
+            # cv2.imshow("Obj Detect 1: {} , {} , {} , {}".format(results["coors"][0], results["coors"][1], results["coors"][2], results["hand_val"]), frame1)
+            # cv2.imshow("Obj Detect 2: {} , {} , {} , {}".format(results["coors"][0], results["coors"][1], results["coors"][2], results["hand_val"]), frame2)
+            cv2.imshow("Obj Detect 1", frame1)
+            cv2.imshow("Obj Detect 2", frame2)
+            if cv2.waitKey(1) == ord('q'):
+                return None
         
         return results
             
