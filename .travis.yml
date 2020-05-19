@@ -8,3 +8,4 @@ install:
 #Run Tests
 script:
   - ls
+  - cd ClientAndServerTesting
