@@ -9,3 +9,5 @@ install:
 script:
   - ls
   - cd ClientAndServerTesting
+  - ls
+  - python3 RequestTest.py
