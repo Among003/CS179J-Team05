@@ -9,6 +9,7 @@ install:
   - sudo pip install requests
 
 #Run Tests
-script:
+before_script:
   - cd ClientAndServerTesting
+script:
   - python3 RequestTest.py
