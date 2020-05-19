@@ -3,6 +3,7 @@ python:
  
 #Install dependencies
 before_install:
+  - pip install pip 
   - sudo apt-get update
   - sudo pip install requests
 install:
