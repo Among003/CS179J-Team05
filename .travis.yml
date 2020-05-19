@@ -1,0 +1,13 @@
+nguage: python
+python:i
+  -"3.5"
+  -"pypy3"
+
+#Install dependencies
+install:
+  -pip install -r requirements.txt
+  -pip install .
+
+#Run Tests
+script:
+  python RequestTest.py
