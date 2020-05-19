@@ -7,4 +7,4 @@ install:
 
 #Run Tests
 script:
-  - python ~/CS179J-Team05/ClientAndServerTesting/RequestTest.py
+  - python ~/ClientAndServerTesting/RequestTest.py
