@@ -4,10 +4,10 @@ python:
 #Install dependencies
 before_install:
   - pip install -r requirements.txt
-  - cd ClientAndServerTesting
   - pip install pip 
   - sudo apt-get update
   - sudo pip install requests
+  - cd ClientAndServerTesting
 install:
 
 #Run Tests
