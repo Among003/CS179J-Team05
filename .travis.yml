@@ -11,4 +11,4 @@ install:
 #Run Tests
 script:
   - cd ClientAndServerTesting
-  - python3 RequestTest.py
+  - python RequestTest.py
