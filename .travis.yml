@@ -10,4 +10,4 @@ install:
 
 #Run Tests
 script:
-  python RequestTest.py
+  python /ClientAndServerTesting/RequestTest.py
