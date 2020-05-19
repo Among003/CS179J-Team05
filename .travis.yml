@@ -12,4 +12,4 @@ install:
 
 #Run Tests
 script:
-  - python RequestTest.py
+  - python3 RequestTest.py
