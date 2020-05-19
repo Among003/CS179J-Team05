@@ -2,14 +2,13 @@ language: python
 python:
  
 #Install dependencies
-before_install:
+install:
   - pip install -r requirements.txt
   - pip install pip 
   - sudo apt-get update
   - sudo pip install requests
-  - cd ClientAndServerTesting
-install:
 
 #Run Tests
 script:
+  - cd ClientAndServerTesting
   - python3 RequestTest.py
