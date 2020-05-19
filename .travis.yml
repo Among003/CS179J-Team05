@@ -5,6 +5,7 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install pip 
+  - pip install flask
   - sudo apt-get update
   - sudo pip install requests
 
