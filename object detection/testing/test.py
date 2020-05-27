@@ -5,7 +5,7 @@ Created on Wed Apr 22 19:16:06 2020
 @author: tyler
 """
 
-import os, cv2, sys, json, re
+import os, cv2, sys, json, re, pytest
 import numpy as np
 import tensorflow as tf
 import datetime as t
@@ -23,21 +23,40 @@ from object_detection.utils import visualization_utils as vis_util
 p = re.compile('([ .:-])')
 TEST_DUMP_FILE = "test_" + p.sub('', str(t.datetime.now()).split('.')[0])
 
+# Video files for testing
+testVideo1_1 = os.path.join(cwd, "testing/video/video1_test1.mp4")
+testVideo2_1 = os.path.join(cwd, "testing/video/video2_test1.mp4")
+testVideo1_2 = os.path.join(cwd, "testing/video/video1_test2.mp4")
+testVideo2_2 = os.path.join(cwd, "testing/video/video2_test2.mp4")
+testVideo1_3 = os.path.join(cwd, "testing/video/video1_test3.mp4")
+testVideo2_3 = os.path.join(cwd, "testing/video/video2_test3.mp4")
+testVideo1_4 = os.path.join(cwd, "testing/video/video1_test4.mp4")
+testVideo2_4 = os.path.join(cwd, "testing/video/video2_test4.mp4")
+
 def CheckWrong(predicted, correct):
+    """
+    Takes in array of predicted values and verifies that each prediction has the correct label.
+    If any of the predictions are wrong, the test fails.
+
+    Returns
+    -------
+    report : True or False
+
+    """
     for prediction in predicted:
         if prediction != correct:
             print("Expected: ", correct," recieved: ", prediction)
             return False
     return True
 
+@pytest.mark.parametrize('testInputVideo1,testInputVideo2,expected',[(testVideo1_1,testVideo1_2,"open hand"),(testVideo2_1,testVideo2_2,"open hand"),(testVideo3_1,testVideo3_2,"closed hand"),(testVideo4_1,testVideo4_2,"closed hand")])
 def testVideoOnObjectDetection(testVideo1, testVideo2, label):
     """
-    
+    Creates environment for object detection class to run and then runs the object detection module over the given video feed.
 
     Returns
     -------
-    report : Dictionary
-        Gives passing value, input, and output as dictionary to be aggregated
+    void
 
     """
     
@@ -63,95 +82,61 @@ def testVideoOnObjectDetection(testVideo1, testVideo2, label):
     print([result for result in results])
     correct = CheckWrong([result["video1"]["classes"] for result in results], label)
     
-    #print([])
+    assert correct == True
     
     report = {"correct": correct, "input": video1, "output": results}
-    #report = {"output": (boxes, scores, classes)}
     
-    return report
+    return
+    #return report
     
     
-def TestVideoOnObjectDetectionHarness():
-    """
-    Specific harness for Video Object Detection, configures
+# def TestVideoOnObjectDetectionHarness():
+#     """
+#     Specific harness for Video Object Detection, configures
 
-    Returns
-    -------
-    Report - Dictionary containing
+#     Returns
+#     -------
+#     Report - Dictionary containing
 
-    """
+#     """
     
-    report = {}
+#     report = {}
     
-    os.chdir('..')
+#     # report["test1"] = testVideoOnObjectDetection(testVideo1_1, testVideo2_1, "open hand")
+#     # report["test2"] = testVideoOnObjectDetection(testVideo1_2, testVideo2_2, "open hand")
+#     # report["test3"] = testVideoOnObjectDetection(testVideo1_3, testVideo2_3, "closed hand")
+#     # report["test4"] = testVideoOnObjectDetection(testVideo1_4, testVideo2_4, "closed hand")
     
-    testVideo1_1 = os.path.join(cwd, "testing/video/video1_test1.mp4")
-    testVideo2_1 = os.path.join(cwd, "testing/video/video2_test1.mp4")
-    testVideo1_2 = os.path.join(cwd, "testing/video/video1_test2.mp4")
-    testVideo2_2 = os.path.join(cwd, "testing/video/video2_test2.mp4")
-    testVideo1_3 = os.path.join(cwd, "testing/video/video1_test3.mp4")
-    testVideo2_3 = os.path.join(cwd, "testing/video/video2_test3.mp4")
-    testVideo1_4 = os.path.join(cwd, "testing/video/video1_test4.mp4")
-    testVideo2_4 = os.path.join(cwd, "testing/video/video2_test4.mp4")
-    
-    report["test1"] = testVideoOnObjectDetection(testVideo1_1, testVideo2_1, "open hand")
-    report["test2"] = testVideoOnObjectDetection(testVideo1_2, testVideo2_2, "open hand")
-    report["test3"] = testVideoOnObjectDetection(testVideo1_3, testVideo2_3, "closed hand")
-    report["test4"] = testVideoOnObjectDetection(testVideo1_4, testVideo2_4, "closed hand")
-    
-    return report
+#     return report
 
-def testControlEnvironment(video1, video2, correct):
-    
-    control.main(video1, video2, Verbose=True, Testing=True)
-    
-    # try:
-    #     control.main(video1, video2)
-    # except Exception:
-    #     print
-    #     return {"correct": False}
-    
-    return {"correct": True}
+def testControlEnvironment(video1, video2):
+    try:
+        control.main(video1, video2, Verbose=True, Testing=True)
+        return True
+    except Exception:
+        return False
 
-def testControlEnvironmentHarness():
-    
-    report = {}
-    
-    os.chdir('..')
-    
-    testVideo1_1 = os.path.join(cwd, "testing/video/video1_test1.mp4")
-    testVideo2_1 = os.path.join(cwd, "testing/video/video2_test1.mp4")
-    testVideo1_2 = os.path.join(cwd, "testing/video/video1_test2.mp4")
-    testVideo2_2 = os.path.join(cwd, "testing/video/video2_test2.mp4")
-    testVideo1_3 = os.path.join(cwd, "testing/video/video1_test3.mp4")
-    testVideo2_3 = os.path.join(cwd, "testing/video/video2_test3.mp4")
-    testVideo1_4 = os.path.join(cwd, "testing/video/video1_test4.mp4")
-    testVideo2_4 = os.path.join(cwd, "testing/video/video2_test4.mp4")
-    
-    report["test1"] = testControlEnvironment(testVideo1_1, testVideo2_1, "open hand")
-    report["test2"] = testControlEnvironment(testVideo1_2, testVideo2_2, "open hand")
-    report["test3"] = testControlEnvironment(testVideo1_3, testVideo2_3, "closed hand")
-    report["test4"] = testControlEnvironment(testVideo1_4, testVideo2_4, "closed hand")
-    
-    return report
+@pytest.mark.parametrize('testInput,expected',[((testVideo1_1,testVideo1_2),True),((testVideo2_1,testVideo2_2),True),((testVideo3_1,testVideo3_2),True),((testVideo4_1,testVideo4_2),True)])
+def testControlEnvironmentHarness(testInput, expected):
+    assert testControlEnvironment(*testInput) == expected
 
-def runObjDetectTests():
-    print('started testing object detection')
-    report = TestVideoOnObjectDetectionHarness()
-    for test in report:
-        print(test, " Report returned: ", report[test]["correct"])
-    print(report)
-    with open(os.path.join(os.path.abspath('testing/logs'), TEST_DUMP_FILE), 'w+') as jF:
-        json.dump(str(report), jF)
+# def runObjDetectTests():
+#     print('started testing object detection')
+#     report = TestVideoOnObjectDetectionHarness()
+#     for test in report:
+#         print(test, " Report returned: ", report[test]["correct"])
+#     print(report)
+#     with open(os.path.join(os.path.abspath('testing/logs'), TEST_DUMP_FILE), 'w+') as jF:
+#         json.dump(str(report), jF)
         
-def runControlTests():
-    print('started testing control environment')
-    report = testControlEnvironmentHarness()
-    for test in report:
-        print(test, " Report returned: ", report[test]["correct"])
-    print(report)
-    with open(os.path.join(os.path.abspath('testing/logs'), TEST_DUMP_FILE), 'w+') as jF:
-        json.dump(str(report), jF)
+# def runControlTests():
+#     print('started testing control environment')
+#     report = testControlEnvironmentHarness()
+#     for test in report:
+#         print(test, " Report returned: ", report[test]["correct"])
+#     print(report)
+#     with open(os.path.join(os.path.abspath('testing/logs'), TEST_DUMP_FILE), 'w+') as jF:
+#         json.dump(str(report), jF)
 
 def main():
     runObjDetectTests()
