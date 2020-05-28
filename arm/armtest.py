@@ -32,17 +32,17 @@ GPIO.setup(7, GPIO.OUT)
 
 def main():
     #Test hand fully opens then fully closes
-    arm.move_ccw(720, hand_motor)
-    arm.move_cw(720, hand_motor)
+    move_ccw(720, hand_motor)
+    move_cw(720, hand_motor)
 
     #Test arm rotation. Rotates by 180 degrees
-    arm.move_cw(180, hand_motor)
-    arm.move_ccw(180, hand_motor)
+    move_cw(180, hand_motor)
+    move_ccw(180, hand_motor)
 
     #Test vertical movement
-    arm.move_cw(10, motor4)
+    move_cw(10, motor4)
     time.sleep(.1)
-    arm.move_ccw(10, motor4)
+    move_ccw(10, motor4)
 
     GPIO.cleanup()
 
@@ -54,10 +54,10 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         #Set all output to 0
-        arm.moveStepper(0, 0, 0, 0, hand_motor)
-        arm.moveStepper(0, 0, 0, 0, bottom_motor)
-        arm.moveStepper(0, 0, 0, 0, motor3)
-        arm.moveStepper(0, 0, 0, 0, motor4)
+        moveStepper(0, 0, 0, 0, hand_motor)
+        moveStepper(0, 0, 0, 0, bottom_motor)
+        moveStepper(0, 0, 0, 0, motor3)
+        moveStepper(0, 0, 0, 0, motor4)
         GPIO.cleanup()
         try:
             sys.exit(0)
