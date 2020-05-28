@@ -29,9 +29,7 @@ def serverAndClientTest(x, y, z, hand):
 		try:                                                              
 			assert (abs(float(xVal)-float(x)) < 0.001) and (abs(float(yVal)-float(y)) < 0.001) and (abs(float(zVal)-float(z)) < 0.001) and (handVal == hand) 
 		except:                                                                                                                                                                                                                         
-			print("Warning, assertion failed on values: "+ str(x) + " " + str(y) + " " + str(z) + " " + str(hand) + "\n" + "Recieved: " + str(xVal) + " " + str(yVal) +  " " + str(zVal) +   " " + str(handVal) +" instead") 
-			print(hand," ",handVal)
-			print(hand == handVal)
+			exit(1)
 			return {"correct": False, "input" : (x,y,z,hand), "output": (xVal, yVal, zVal, handVal)} 
 		
 		return {"correct": True, "input" : (x,y,z,hand), "output": (xVal, yVal, zVal, handVal)} ;
