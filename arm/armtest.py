@@ -40,9 +40,11 @@ def main():
     move_ccw(180, hand_motor)
 
     #Test vertical movement
+    move_cw(50, motor4)
+    time.sleep(.5)
+    move_ccw(50, motor4)
+    time.sleep(.5)
     move_cw(10, motor4)
-    time.sleep(.1)
-    move_ccw(10, motor4)
 
     GPIO.cleanup()
 
