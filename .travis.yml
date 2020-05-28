@@ -4,12 +4,11 @@ python:
 #Install dependencies
 install:
   - pip install -r requirements.txt
-  - sudo pip install requests
 
 #Run Tests
 before_script:
   - cd ClientAndServerTesting
-  - python3  -m pip install requests
+
 script:
   - python3 RequestTest.py
 # - py.test [test].py
