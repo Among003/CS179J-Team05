@@ -34,7 +34,7 @@ def serverAndClientTest(x, y, z, hand):
 			print(hand == handVal)
 			return {"correct": False, "input" : (x,y,z,hand), "output": (xVal, yVal, zVal, handVal)} 
 		
-		return return {"correct": True, "input" : (x,y,z,hand), "output": (xVal, yVal, zVal, handVal)} ;
+		return {"correct": True, "input" : (x,y,z,hand), "output": (xVal, yVal, zVal, handVal)} ;
 
 	
 
