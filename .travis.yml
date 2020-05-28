@@ -4,9 +4,6 @@ python:
 #Install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install pip 
-  - pip install flask
-  - sudo apt-get update
   - sudo pip install requests
 
 #Run Tests
@@ -15,3 +12,4 @@ before_script:
   - python3  -m pip install requests
 script:
   - python3 RequestTest.py
+# - py.test [test].py
