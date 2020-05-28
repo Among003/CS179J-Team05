@@ -8,7 +8,9 @@ Flask==1.0.2
 Flask-Login==0.4.0
 requests==2.19.1
 jsonify==0.5
-
+#opencv-python
+#sysos
+#re
 
 
 # Automated tests
