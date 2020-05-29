@@ -10,11 +10,15 @@ import numpy as np
 import tensorflow as tf
 
 # tensorflow module for utilities using the models research repository
-sys.path.append('D:\school\CS179J\tensorflow\models')
-sys.path.append('D:\school\CS179J\tensorflow\models\research')
-sys.path.append('D:\school\CS179J\tensorflow\models\research\slim')
-from utils import label_map_util
-from utils import visualization_utils as vis_util
+# sys.path.append('D:\school\CS179J\tensorflow\models')
+# sys.path.append('D:\school\CS179J\tensorflow\models\research')
+# sys.path.append('D:\school\CS179J\tensorflow\models\research\slim')
+prev_dir = os.getcwd()
+cwd = os.path.dirname(os.path.abspath(__file__))
+os.chdir(os.path.join(cwd, '..'))
+from models.research.object_detection.utils import label_map_util
+from models.research.object_detection.utils import visualization_utils as vis_util
+os.chdir(prev_dir)
 
 CLNUM = 2
 

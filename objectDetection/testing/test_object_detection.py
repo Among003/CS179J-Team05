@@ -10,7 +10,8 @@ import numpy as np
 import tensorflow as tf
 import datetime as t
 cwd = os.path.dirname(os.path.abspath(__file__))
-os.chdir('..')
+os.chdir(os.path.join(cwd,'..'))
+print(os.getcwd())
 import hand_detection
 import coordinates
 import controlEnvironment as control
@@ -49,7 +50,7 @@ def CheckWrong(predicted, correct):
             return False
     return True
 
-@pytest.mark.parametrize('testInputVideo1,testInputVideo2,expected',[(testVideo1_1,testVideo1_2,"open hand"),(testVideo2_1,testVideo2_2,"open hand"),(testVideo3_1,testVideo3_2,"closed hand"),(testVideo4_1,testVideo4_2,"closed hand")])
+@pytest.mark.parametrize('testInputVideo1,testInputVideo2,expected',[(testVideo1_1,testVideo2_1,"open hand"),(testVideo1_2,testVideo2_2,"open hand"),(testVideo1_3,testVideo2_3,"closed hand"),(testVideo1_4,testVideo2_4,"closed hand")])
 def testVideoOnObjectDetection(testVideo1, testVideo2, label):
     """
     Creates environment for object detection class to run and then runs the object detection module over the given video feed.
@@ -110,13 +111,29 @@ def testVideoOnObjectDetection(testVideo1, testVideo2, label):
 #     return report
 
 def testControlEnvironment(video1, video2):
+    """
+    Tests the control environment of the system by verifying the execution of the program executes without exceptions
+
+    Parameters
+    ----------
+    video1 : video file
+        video feed of top webcam
+    video2 : video file
+        video feed of side webcam
+
+    Returns
+    -------
+    bool
+        Return false if any line of the control environment throws an exception
+
+    """
     try:
         control.main(video1, video2, Verbose=True, Testing=True)
         return True
     except Exception:
         return False
 
-@pytest.mark.parametrize('testInput,expected',[((testVideo1_1,testVideo1_2),True),((testVideo2_1,testVideo2_2),True),((testVideo3_1,testVideo3_2),True),((testVideo4_1,testVideo4_2),True)])
+@pytest.mark.parametrize('testInput,expected',[((testVideo1_1,testVideo2_1),True),((testVideo1_2,testVideo2_2),True),((testVideo1_3,testVideo2_3),True),((testVideo1_4,testVideo2_4),True)])
 def testControlEnvironmentHarness(testInput, expected):
     assert testControlEnvironment(*testInput) == expected
 
@@ -139,8 +156,9 @@ def testControlEnvironmentHarness(testInput, expected):
 #         json.dump(str(report), jF)
 
 def main():
-    runObjDetectTests()
-    runControlTests()
+    # runObjDetectTests()
+    # runControlTests()
+    return
     
 if __name__ == '__main__':
    main()
