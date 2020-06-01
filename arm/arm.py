@@ -102,17 +102,17 @@ def move_up(motor):
     '''
     Moves motor to control vertical movement in upwards direction
     '''
-    move_cw(50, motor)
-    time.sleep(.1)
-    move_ccw(10, motor)
+    move_cw(30, motor)
+    time.sleep(.01)
+    move_ccw(30, motor)
 
 def move_down(motor):
     '''
     Moves motor to control vertical movement in upwards direction
     '''
-    move_ccw(50, motor)
-    time.sleep(.1)
-    move_cw(10, motor)
+    move_ccw(30, motor)
+    time.sleep(.01)
+    move_cw(30, motor)
 
 def main():
     prev_r = 0
@@ -131,7 +131,10 @@ def main():
 
         #Convert rectangular coordinates to cylindrical
         r_val = math.sqrt(x_val ** 2 + y_val ** 2)
-        theta = math.atan(y_val / x_val) * 180 / math.pi  #Angle in degrees
+        if x_val == 0.0:
+            theta = math.atan(y_val / (x_val + 0.00001)) * 180 / math.pi  #Angle in degrees
+        else:
+            theta = math.atan(y_val / x_val) * 180 / math.pi
 
         print(r_val)
         print(theta)
@@ -148,41 +151,35 @@ def main():
         else: #Hand stays the same
             t1 = threading.Thread(target= move_cw,args=(0, hand_motor))
 
-        if delta_theta >= 0: 
+        if delta_theta >= 0:  #Rotate Right
             t2 = threading.Thread(target= move_cw,args=(delta_theta * 2, bottom_motor))
-        else:
+        else: #Rotate Left
             t2 = threading.Thread(target= move_ccw,args=(delta_theta * 2 * -1, bottom_motor))
-        
-        if delta_r >= 0:
-            t3 = threading.Thread(target= move_cw,args=(delta_r * 360 * 2, motor3))
-        else:
-            t3 = threading.Thread(target= move_ccw,args=(delta_r * 360 * -1 * 2, motor3))
+        # if delta_r >= 0:
+        #     t3 = threading.Thread(target= move_cw,args=(delta_r * 360 * 2, motor3))
+        # else:
+        #     t3 = threading.Thread(target= move_ccw,args=(delta_r * 360 * -1 * 2, motor3))
         if z_val >= 0.6 and not up_pos: #Move arm up
             up_pos = True
-            t4 = threading.Thread(target=move_up, args=(motor4))
-        elif z_val <=0.4 and up_pos: #Move arm down
+            t4 = threading.Thread(target=move_up, args=(motor4,))
+        elif z_val <= 0.54 and up_pos: #Move arm down
             up_pos = False
-            t4 = threading.Thread(target=move_down, args=(motor4))
+            t4 = threading.Thread(target=move_down, args=(motor4,))
         else:
             t4 = threading.Thread(target= move_ccw,args=(0, motor4))
-
-        # if delta_z >= 0:
-        #     t4 = threading.Thread(target= move_cw,args=(delta_z * 360 * 2, motor4))
-        # else:
-        #     t4 = threading.Thread(target= move_ccw,args=(delta_z * 360 * -1 * 2, motor4))
         
         t1.setDaemon(True)
         t2.setDaemon(True)
-        t3.setDaemon(True)
+        # t3.setDaemon(True)
         t4.setDaemon(True)
         t1.start()
         t2.start()
-        t3.start()
+        # t3.start()
         t4.start()
 
         t1.join()
         t2.join()
-        t3.join()
+        # t3.join()
         t4.join()
 
         prev_r = r_val
@@ -190,7 +187,7 @@ def main():
         prev_z = z_val
         prev_hand = hand_val
 
-        time.sleep(.5)
+        time.sleep(.1)
     
 if __name__ == "__main__":
     try:
