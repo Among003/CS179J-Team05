@@ -8,8 +8,8 @@ install:
 #Run Tests
 before_script:
   #- cd ClientAndServerTesting
-   - cd object\ detection
+  #- cd object\ detection
 
 script:
- # - python3 newRequestTest.py
-  - pytest testing/test.py
+  - pytest ./object-detection/testing/test.py
+  - python3 ./ClientAndServerTesting/newRequestTest.py
