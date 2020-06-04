@@ -1,0 +1,14 @@
+language: python
+python:
+ 
+#Install dependencies
+install:
+  - pip install -r requirements.txt
+
+#Run Tests
+before_script:
+  #- cd ClientAndServerTesting
+
+script:
+ # - python3 newRequestTest.py
+  - pytest ./object-detection/testing/test.py
