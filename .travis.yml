@@ -11,5 +11,5 @@ before_script:
   #- cd object\ detection
 
 script:
-  - pytest test_object_Detection.py
+  - pytest test_object_detection.py
   - python3 ./ClientAndServerTesting/newRequestTest.py
