@@ -10,6 +10,7 @@ requests==2.20.0
 jsonify==0.5
 opencv-python==4.2.0.34
 cv2-tools==2.3.4
+imutils==0.5.3
 tensorflow==1.15
 datetime==4.3
 #sysos
