@@ -12,8 +12,8 @@ import datetime as t
 cwd = os.path.dirname(os.path.abspath(__file__))
 os.chdir(os.path.join(cwd,'..'))
 print(os.getcwd())
-import objectDetection.hand_detection
-import objectDetection.coordinates
+import objectDetection.hand_detection as hand_detection
+import objectDetection.coordinates as coordinates
 import objectDetection.controlEnvironment as control
 os.chdir(cwd)
 
@@ -50,7 +50,7 @@ def CheckWrong(predicted, correct):
             return False
     return True
 
-@pytest.mark.parametrize('testInputVideo1,testInputVideo2,expected',[(testVideo1_1,testVideo2_1,"open hand"),(testVideo1_2,testVideo2_2,"open hand"),(testVideo1_3,testVideo2_3,"closed hand"),(testVideo1_4,testVideo2_4,"closed hand")])
+@pytest.mark.parametrize('testVideo1,testVideo2,label',[(testVideo1_1,testVideo2_1,"open hand"),(testVideo1_2,testVideo2_2,"open hand"),(testVideo1_3,testVideo2_3,"closed hand"),(testVideo1_4,testVideo2_4,"closed hand")])
 def testVideoOnObjectDetection(testVideo1, testVideo2, label):
     """
     Creates environment for object detection class to run and then runs the object detection module over the given video feed.
@@ -61,8 +61,8 @@ def testVideoOnObjectDetection(testVideo1, testVideo2, label):
 
     """
     
-    GRAPH_PATH = os.path.join(cwd, "../inference_graph/frozen_inference_graph.pb")
-    LABEL_PATH = os.path.join(cwd, "../training\labelmap.pbtxt")
+    GRAPH_PATH = os.path.join(cwd, "ObjectDetection/inference_graph/frozen_inference_graph.pb")
+    LABEL_PATH = os.path.join(cwd, "ObjectDetection/training/labelmap.pbtxt")
     
     video1 = cv2.VideoCapture(testVideo1)
     video2 = cv2.VideoCapture(testVideo2)
