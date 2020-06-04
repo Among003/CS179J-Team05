@@ -10,14 +10,15 @@ install:
   - sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
   - sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
   - rm -f $PROTOC_ZIP
-  - protoc models/research/object_detection/protos/*.proto --python_out=.
+  - cd /models/research  
+  - protoc object_detection/protos/*.proto --python_out=.
 
 
 #Run Tests
 before_script:
   #- cd ClientAndServerTesting
   #- cd object\ detection
-
+  - cd--
 script:
   - pytest test_object_detection.py
   - python3 ./ClientAndServerTesting/newRequestTest.py
