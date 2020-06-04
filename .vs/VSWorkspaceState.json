@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\ClientAndServerTesting",
+    "\\ClientTest",
+    "\\flaskapp"
   ],
+  "SelectedNode": "\\ClientAndServerTesting\\newRequestTest.py",
   "PreviewInSolutionExplorer": false
 }
