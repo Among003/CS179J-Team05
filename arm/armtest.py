@@ -36,8 +36,8 @@ def main():
     move_cw(720, hand_motor)
 
     #Test arm rotation. Rotates by 180 degrees
-    move_cw(180, hand_motor)
-    move_ccw(180, hand_motor)
+    move_cw(180, bottom_motor)
+    move_ccw(180, bottom_motor)
 
     #Test vertical movement
     move_cw(50, motor4)

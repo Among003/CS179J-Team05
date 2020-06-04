@@ -4,7 +4,7 @@ import json
 import sys
 import time
 
-url = "http://ec2-54-153-87-218.us-west-1.compute.amazonaws.com/"
+url = "http://ec2-54-153-87-218.us-west-1.compute.amazonaws.com"
 
 def postData(x_val, y_val, z_val, hand_val):
     """
@@ -17,7 +17,7 @@ def postData(x_val, y_val, z_val, hand_val):
 
     try:
         r.raise_for_status()
-    except r.exceptions.HTTPError as e:
+    except req.exceptions.HTTPError as e:
         return "Error: " + str(e)
 
 
@@ -28,7 +28,11 @@ def getData():
     -------
     Dictionary containing x,y,z and hand values. 
     """
-    r = req.get(url + "/getData/",  headers={'Cache-Control': 'no-cache'})
+    try:
+        r = req.get(url + "/getData/",  headers={'Cache-Control': 'no-cache'})
+    except r.ConnectionError as e:
+        print("Failed to retrive data")
+        
 
     try:
         r.raise_for_status()
@@ -45,7 +49,3 @@ def getData():
     data = {'x': xVal, 'y': yVal, 'z': zVal, 'hand': handVal}
 
     return data
-
-
-
-postData(0.12345, 0.65489, 0.147852, False)
