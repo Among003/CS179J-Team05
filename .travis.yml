@@ -14,4 +14,4 @@ before_script:
 
 script:
  # - python3 newRequestTest.py
-  - pytest ./object-detection/testing/test.py
+  - pytest ./test_object_detection.py
