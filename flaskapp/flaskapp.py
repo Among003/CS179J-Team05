@@ -23,7 +23,7 @@ def postData():
 		data['hand'] = content.get('hand')
 		data['z'] = content.get('z')		
 
-		outfile = open("/home/ubuntu/CS179J-Team05/flaskapp/static/data.txt", 'w');
+		outfile = open("/home/ubuntu/CS179J-Team05/flaskapp/static/data.txt", 'w+');
 		outfile.write(json.dumps(data))	
 		return 'Posted'
 	return 'Post'
@@ -31,7 +31,7 @@ def postData():
 @app.route('/getData/',methods=['GET','POST'])
 def getData():
 	if request.method == 'GET':
-		infile = open("/home/ubuntu/CS179J-Team05/flaskapp/static/data.txt",'r');
+		infile = open("/home/ubuntu/CS179J-Team05/flaskapp/static/data.txt",'r+');
 		tempDict = json.load(infile)
 		return jsonify(tempDict)
 		#return "TODO"

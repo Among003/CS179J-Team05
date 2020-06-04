@@ -4,14 +4,12 @@ python:
 #Install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install pip 
-  - pip install flask
-  - sudo apt-get update
-  - sudo pip install requests
 
 #Run Tests
 before_script:
-  - cd ClientAndServerTesting
-  - python3  -m pip install requests
+  #- cd ClientAndServerTesting
+
 script:
-  - python3 RequestTest.py
+ # - python3 newRequestTest.py
+  - pytest ./object-detection/testing/test.py
+
