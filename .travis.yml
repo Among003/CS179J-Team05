@@ -3,7 +3,7 @@ python:
  
 #Install dependencies
 before_install:
-  - export PATH=/home/travis/build/Among003/CS179J-Team05/models/research;$PATH
+  - export PATH=/home/travis/build/Among003/CS179J-Team05/models/research:$PATH
   - echo $PATH
 install:
   
