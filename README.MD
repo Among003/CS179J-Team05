@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Among003/CS179J-Team05.svg?branch=master)](https://travis-ci.org/Among003/CS179J-Team05)
+
 # Remote Server-Controlled Arm
 ## CS179J Project by Team 5
 
