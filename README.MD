@@ -1,8 +1,7 @@
 # Remote Server-Controlled Arm
 ## CS179J Project by Team 5
 
-This project was created by Team 5 in the class of CS179J Spring 2020 
-
+This project was created by Team 5 in the class of CS179J Spring 2020 at the University of California Riverside 
 ### What is this project.
 
 This project is a robotic arm that is controlled using computer vision.  
