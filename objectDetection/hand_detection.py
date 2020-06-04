@@ -5,7 +5,7 @@ Created on Wed Apr 22 22:25:54 2020
 @author: tyler
 """
 
-import os, cv, cv2, sys, imutils, time
+import os, cv2, sys, imutils, time
 import numpy as np
 import tensorflow as tf
 
