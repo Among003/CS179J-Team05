@@ -2,7 +2,11 @@ language: python
 python:
  
 #Install dependencies
+before_install:
+  - export PATH=$TRAVIS_BUILD_DIR/models/research:$PATH
+  - echo $PATH
 install:
+  
   - pip install -r requirements.txt
   - pip install opencv-python
   - PROTOC_ZIP=protoc-3.7.1-linux-x86_64.zip
@@ -19,7 +23,7 @@ before_script:
   #- cd ClientAndServerTesting
   #- cd object\ detection
   - cd $TRAVIS_BUILD_DIR
-  - ls
+
 script:
   - pytest test_object_detection.py
   - python3 ./ClientAndServerTesting/newRequestTest.py
