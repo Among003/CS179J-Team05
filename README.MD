@@ -19,6 +19,6 @@ Currently, there are some components of the project that are only for developmen
 
 More improvements/changes are discussed in the issues.
 
-##License
+## License
 
 This project is licensed under the MIT public license.
