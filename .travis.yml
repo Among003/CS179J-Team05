@@ -18,7 +18,8 @@ install:
 before_script:
   #- cd ClientAndServerTesting
   #- cd object\ detection
-  - cd /
+  - cd $TRAVIS_BUILD_DIR
+  - ls
 script:
   - pytest test_object_detection.py
   - python3 ./ClientAndServerTesting/newRequestTest.py
