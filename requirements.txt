@@ -9,6 +9,7 @@ Flask-Login==0.4.0
 requests==2.19.1
 jsonify==0.5
 opencv-python==4.2.0.34
+cv2-tools==2.3.4
 tensorflow==1.15
 datetime==4.3
 #sysos
