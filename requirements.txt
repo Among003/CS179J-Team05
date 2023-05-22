@@ -6,7 +6,7 @@ Flask==1.0.2
 
 # Flask Packages
 Flask-Login==0.4.0
-requests==2.20.0
+requests==2.31.0
 jsonify==0.5
 #opencv-python
 #sysos
